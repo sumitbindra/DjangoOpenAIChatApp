@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Chat with AI</h2>
+  <form method="post">
+    {% csrf_token %}
+    <input type="text" name="message" placeholder="Type your message here">
+    <input type="submit" value="Send">
+  </form>
+  <br>
+  <div id="chatbox">
+    {% for chat in chats %}
+      <p><b>{{ chat.user.username }}:</b> {{ chat.message }}</p>
+      <p><b>AI:</b> {{ chat.response }}</p>
+      <hr>
+    {% endfor %}
+  </div>
+{% endblock %}

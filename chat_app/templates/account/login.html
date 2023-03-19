@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load socialaccount %} {# Add this line #}
+
+{% block content %}
+  <h2>{% trans "Sign In" %}</h2>
+  <form method="POST" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% trans "Sign In" %}</button>
+  </form>
+  <p>{% trans "Don't have an account?" %} <a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></p>
+
+  {# Add the following section for social authentication #}
+  <hr>
+  <h3>{% trans "Or sign in with:" %}</h3>
+  <ul>
+    {% providers_media_js %}
+    {% for provider in socialaccount.providers %}
+        <li>
+        {% if provider.name == 'Google' %}
+            <a class="google-login-btn" href="{% provider_login_url provider.id %}">{{ provider.name }}</a>
+        {% else %}
+            <a href="{% provider_login_url provider.id %}">{{ provider.name }}</a>
+        {% endif %}
+        </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
