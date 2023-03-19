@@ -29,8 +29,7 @@ AUTH_USER_MODEL = 'chat_app.CustomUser'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['sumitbindra-sturdy-space-goggles-qv4v4jx7vr629r67-8000.preview.app.github.dev', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -159,3 +158,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Use this setting to define the absolute path to the folder where
+# the `collectstatic` management command will collect static files for deployment.
+# You can uncomment and set an appropriate path for your project.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Additional locations of static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'chat_app/static'),
+]
+
+# This was added to use codespaces
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS = ['https://sumitbindra-sturdy-space-goggles-qv4v4jx7vr629r67-8000.preview.app.github.dev']
+
+ACCOUNT_LOGIN_REDIRECT_URL = '/'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'

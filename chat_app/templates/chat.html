@@ -1,18 +1,37 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
-  <h2>Chat with AI</h2>
-  <form method="post">
-    {% csrf_token %}
-    <input type="text" name="message" placeholder="Type your message here">
-    <input type="submit" value="Send">
-  </form>
-  <br>
-  <div id="chatbox">
-    {% for chat in chats %}
-      <p><b>{{ chat.user.username }}:</b> {{ chat.message }}</p>
-      <p><b>AI:</b> {{ chat.response }}</p>
-      <hr>
-    {% endfor %}
+<link rel="stylesheet" href="{% static 'chat_app/styles.css' %}">
+
+<div class="container">
+  <div class="users">
+    <h3>Users</h3>
+    <ul>
+      {% for user in users %}
+        <li>{{ user.username }}</li>
+      {% endfor %}
+    </ul>
   </div>
+  <div class="chat">
+    <div class="header">
+      <h2>Chat with AI</h2>
+    </div>
+    <div class="chatbox">
+      {% for chat in chats %}
+        <p><b>{{ chat.user.username }}:</b> {{ chat.message }}</p>
+        <p><b>AI:</b> {{ chat.response }}</p>
+        <hr>
+      {% endfor %}
+    </div>
+    <div class="send-message">
+      <form method="post">
+        {% csrf_token %}
+        <input type="text" name="message" placeholder="Type your message here" autocomplete="off">
+        <input type="submit" value="Send">
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
