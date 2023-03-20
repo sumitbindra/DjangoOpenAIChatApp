@@ -6,13 +6,8 @@
 <link rel="stylesheet" href="{% static 'chat_app/styles.css' %}">
 
 <div class="container">
-  <div class="users">
-    <h3>Users</h3>
-    <ul>
-      {% for user in users %}
-        <li>{{ user.username }}</li>
-      {% endfor %}
-    </ul>
+  <div class="logout">
+    <a href="{% url 'account_logout' %}">Logout</a>
   </div>
   <div class="chat">
     <div class="header">

@@ -8,12 +8,6 @@
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-  <nav>
-    <a href="{% url 'account_login' %}">Login</a> | 
-    <a href="{% url 'account_signup' %}">Register</a> | 
-    <a href="{% url 'account_logout' %}">Logout</a>
-  </nav>
-  <hr>
   <div id="content" class="container">
     {% block content %}
     {% endblock %}

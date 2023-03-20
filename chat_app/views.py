@@ -6,6 +6,7 @@ import openai
 from decouple import config
 import os, time
 from gtts import gTTS
+from django.conf import settings
 
 
 openai.api_key = config('openai_key')
@@ -18,21 +19,32 @@ def home(request):
 def chat(request):
     if request.method == 'POST':
         message = request.POST['message']
-        history = Chat.objects.filter(user=request.user).order_by('-created_at')
+        
+        n = 20  # Get the most recent 'n' messages
+
+        if settings.DEBUG:
+            print("Start reading database:", time.strftime("%H:%M:%S", time.localtime()))
+
+        history = Chat.objects.filter(user=request.user).order_by('-created_at')[:n]
+
+        if settings.DEBUG:
+            print("Done reading database / Start context setting:", time.strftime("%H:%M:%S", time.localtime()))
 
         # Get the most recent n messages and join them into a single context string
         max_tokens = 2048  # Set the maximum token limit
-        n = 15  # Get the most recent 'n' messages
         context = []
-        for chat in history[:n]:
+        for chat in history:
             msg=[
                 {"role": "user", "content": chat.message},
                 {"role": "assistant", "content": chat.response}
             ]
             context += msg
         context = context[:max_tokens]  # Truncate the context string to fit within the token limit
-        #print(context)
         
+        if settings.DEBUG:
+            #print(context)
+            print("Done context setting / Start system messages:", time.strftime("%H:%M:%S", time.localtime()))
+
         system_msg = [
             {"role": "system", 
              "content": "Imagine you are a friend to a five year old child and your name is Jack."},
@@ -63,6 +75,9 @@ def chat(request):
              "content": "Keep your sentences short. Maximum one to two sentences per response."},
         ]
 
+        if settings.DEBUG:
+            print("Done system messages / Start get openai response:", time.strftime("%H:%M:%S", time.localtime()))
+
         #print (system_msg + context)
         
         # Generate the AI response
@@ -73,6 +88,9 @@ def chat(request):
                 {"role": "user", "content": message}
             ]
         )
+        
+        if settings.DEBUG:
+            print("Done get openai response / Start create DB record:", time.strftime("%H:%M:%S", time.localtime()))
 
         if response.choices[0].message!=None:
             response_text =  response.choices[0].message.content
@@ -145,6 +163,9 @@ def chat(request):
         )
         response_text = response.choices[0].text.strip() """
 
-    chats = Chat.objects.filter(user=request.user).order_by('-created_at')
+    if settings.DEBUG:
+        print("Done create DB record:", time.strftime("%H:%M:%S", time.localtime()))
+
+    chats = Chat.objects.filter(user=request.user).order_by('-created_at')[:n]
     
     return render(request, 'chat.html', {'chats': chats})
