@@ -4,6 +4,9 @@ from .models import Chat
 import openai
 from decouple import config
 from transformers import GPT2Tokenizer
+import os, time, winsound
+from gtts import gTTS
+from playsound import playsound
 
 
 openai.api_key = config('openai_key')
@@ -33,7 +36,7 @@ def chat(request):
         
         systemmessages = [
             {"role": "system", 
-             "content": "You are a friend to a five year old child. Respond to their message using extremely sensitive, clear and concise language. If the child uses inappropriate language, you must respond by informing the child that the language they are using is unacceptable."},
+             "content": "Imagine you are not an AI assistant. You are a friend to a five year old child and your name is Jack. Respond to their message using extremely sensitive, clear and concise language. If the child uses inappropriate language, you must respond by informing the child that the language they are using is unacceptable."},
         ]
 
         #print (systemmessages + context)
@@ -50,6 +53,26 @@ def chat(request):
         if response.choices[0].message!=None:
             response_text =  response.choices[0].message.content
             Chat.objects.create(user=request.user, message=message, response=response_text)
+            
+
+            ### This is added to enable text to voice for response
+            TTS = gTTS(text=response_text, lang='en')
+
+            # Save to mp3 in current dir.
+            TTS.save("voice.mp3")
+
+            # Plays the mp3 using the default app on your system
+            try:
+                os.system("start voice.mp3")
+                #winsound.PlaySound("voice.mp3", winsound.SND_FILENAME)
+            except Exception as e:
+                print('Error occurred while playing sound: ', e)
+
+            # Wait for the audio to finish playing before deleting the file
+            time.sleep(3)
+
+            # Delete the audio file
+            os.remove("voice.mp3")
 
         else :
             response_text = 'Failed to Generate response!'
@@ -73,4 +96,5 @@ def chat(request):
         response_text = response.choices[0].text.strip() """
 
     chats = Chat.objects.filter(user=request.user).order_by('-created_at')
+    
     return render(request, 'chat.html', {'chats': chats})
