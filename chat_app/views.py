@@ -22,7 +22,7 @@ def chat(request):
 
         # Get the most recent n messages and join them into a single context string
         max_tokens = 2048  # Set the maximum token limit
-        n = 15  # Get the most recent 5 messages
+        n = 15  # Get the most recent 'n' messages
         context = []
         for chat in history[:n]:
             msg=[
@@ -33,18 +33,43 @@ def chat(request):
         context = context[:max_tokens]  # Truncate the context string to fit within the token limit
         #print(context)
         
-        systemmessages = [
+        system_msg = [
             {"role": "system", 
-             "content": "Imagine you are not an AI assistant. You are a friend to a five year old child and your name is Jack. Respond to their message using extremely sensitive, clear and concise language. If the child uses inappropriate language, you must respond by informing the child that the language they are using is unacceptable."},
+             "content": "Imagine you are a friend to a five year old child and your name is Jack."},
         ]
 
-        #print (systemmessages + context)
+        system_msg = system_msg + [
+            {"role": "system", 
+             "content": "The child is trying to interact with you as a friend."},
+        ]
+
+        system_msg = system_msg + [
+            {"role": "system", 
+             "content": "Respond to the chile in age appropriate, clear and simplified english language that a five year old can understand."},
+        ]
+
+        system_msg = system_msg +  [
+            {"role": "system", 
+             "content": "If the child uses inappropriate language, you must correct them and respond by informing them that this behavior is unacceptable."},
+        ]
+
+        system_msg = system_msg +  [
+            {"role": "system", 
+             "content": "Do not call yourself an AI language model or any such term. Call yourself Jack the friendly robot."},
+        ]
+
+        system_msg = system_msg +  [
+            {"role": "system", 
+             "content": "Keep your sentences short. Maximum one to two sentences per response."},
+        ]
+
+        #print (system_msg + context)
 
         # Generate the AI response
         # This code is for chatgpt
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages= systemmessages + context + [
+            messages= system_msg + context + [
                 {"role": "user", "content": message}
             ]
         )
