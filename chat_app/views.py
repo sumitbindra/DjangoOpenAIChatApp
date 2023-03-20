@@ -64,6 +64,9 @@ def chat(request):
             # Initialize Pygame
             pygame.init()
 
+            # Initialize Pygame mixer
+            pygame.mixer.init()
+
             # Load the audio file
             pygame.mixer.music.load("voice.mp3")
 
