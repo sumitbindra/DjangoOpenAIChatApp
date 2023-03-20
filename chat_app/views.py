@@ -6,8 +6,7 @@ import openai
 from decouple import config
 import os, time
 from gtts import gTTS
-
-
+import pygame
 
 openai.api_key = config('openai_key')
 
@@ -62,17 +61,40 @@ def chat(request):
             TTS.save("voice.mp3")
 
             # Plays the mp3 using the default app on your system
-            try:
-                os.system("start voice.mp3")
+            # Initialize Pygame
+            pygame.init()
+
+            # Load the audio file
+            pygame.mixer.music.load("voice.mp3")
+
+            # Play the audio file
+            pygame.mixer.music.play()
+
+            # Wait for the audio to finish playing
+            while pygame.mixer.music.get_busy():
+                pygame.time.Clock().tick(10)
+
+            # Quit Pygame
+            pygame.quit()
+
+            """ try:
+                #os.system("start voice.mp3")
+                #playsound("voice.mp3")
+                # Load the audio file
+                audio = AudioSegment.from_file("voice.mp3", format="mp3")
+                
+                print(audio)
+                # Play the audio file
+                play(audio)
                 #winsound.PlaySound("voice.mp3", winsound.SND_FILENAME)
             except Exception as e:
-                print('Error occurred while playing sound: ', e)
+                print('Error occurred while playing sound: ', e) """
 
             # Wait for the audio to finish playing before deleting the file
-            time.sleep(3)
+            #time.sleep(3)
 
             # Delete the audio file
-            os.remove("voice.mp3")
+            #os.remove("voice.mp3")
 
         else :
             response_text = 'Failed to Generate response!'
