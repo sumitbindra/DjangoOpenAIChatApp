@@ -54,7 +54,7 @@ def chat(request):
             Chat.objects.create(user=request.user, message=message, response=response_text)
             
 
-            ### This is added to enable text to voice for response
+            """ ### This is added to enable text to voice for response
             TTS = gTTS(text=response_text, lang='en')
 
             # Save to mp3 in current dir.
@@ -80,7 +80,7 @@ def chat(request):
             # Quit Pygame
             pygame.quit()
 
-            """ try:
+            try:
                 #os.system("start voice.mp3")
                 #playsound("voice.mp3")
                 # Load the audio file
