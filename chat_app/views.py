@@ -3,7 +3,6 @@ from django.shortcuts import render
 from .models import Chat
 import openai
 from decouple import config
-from transformers import GPT2Tokenizer
 import os, time, winsound
 from gtts import gTTS
 from playsound import playsound
