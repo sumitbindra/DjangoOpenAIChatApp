@@ -29,7 +29,7 @@ AUTH_USER_MODEL = 'chat_app.CustomUser'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = ['sumitbindra-sturdy-space-goggles-qv4v4jx7vr629r67-8000.preview.app.github.dev', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = [config('codespaces_server'), 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -171,7 +171,10 @@ STATICFILES_DIRS = [
 
 # This was added to use codespaces
 if DEBUG:
-    CSRF_TRUSTED_ORIGINS = ['https://sumitbindra-sturdy-space-goggles-qv4v4jx7vr629r67-8000.preview.app.github.dev']
+    CSRF_TRUSTED_ORIGINS = [os.path.join('https://', config('codespaces_server'))]
+    print(CSRF_TRUSTED_ORIGINS)
+    # Enable HTTPS-only CSRF cookie
+    CSRF_COOKIE_SECURE = True
 
-ACCOUNT_LOGIN_REDIRECT_URL = '/'
-ACCOUNT_SIGNUP_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/chat/'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/chat/'

@@ -7,6 +7,10 @@ from decouple import config
 openai.api_key = config('openai_key')
 
 @login_required
+def home(request):
+    pass
+
+@login_required
 def chat(request):
     if request.method == 'POST':
         message = request.POST['message']
