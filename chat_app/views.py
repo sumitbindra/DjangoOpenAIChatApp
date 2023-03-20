@@ -4,9 +4,9 @@ from django.shortcuts import redirect
 from .models import Chat
 import openai
 from decouple import config
-import os, time, winsound
+import os, time
 from gtts import gTTS
-from playsound import playsound
+
 
 
 openai.api_key = config('openai_key')
