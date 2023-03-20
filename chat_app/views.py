@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.shortcuts import redirect
 from .models import Chat
 import openai
 from decouple import config
@@ -12,7 +13,7 @@ openai.api_key = config('openai_key')
 
 @login_required
 def home(request):
-    pass
+    return redirect('chat')
 
 @login_required
 def chat(request):
