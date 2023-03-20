@@ -17,11 +17,11 @@ def home(request):
 
 @login_required
 def chat(request):
+    n = 20  # Get the most recent 'n' messages for display and context
+
     if request.method == 'POST':
         message = request.POST['message']
         
-        n = 20  # Get the most recent 'n' messages
-
         if settings.DEBUG:
             print("Start reading database:", time.strftime("%H:%M:%S", time.localtime()))
 
