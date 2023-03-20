@@ -29,7 +29,7 @@ AUTH_USER_MODEL = 'chat_app.CustomUser'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = [config('codespaces_server'), 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'chatappai.herokuapp.com']
 
 # Application definition
 
@@ -171,8 +171,7 @@ STATICFILES_DIRS = [
 
 # This was added to use codespaces
 if DEBUG:
-    CSRF_TRUSTED_ORIGINS = [os.path.join('https://', config('codespaces_server'))]
-    print(CSRF_TRUSTED_ORIGINS)
+    #CSRF_TRUSTED_ORIGINS = [os.path.join('https://', config('codespaces_server'))]
     # Enable HTTPS-only CSRF cookie
     CSRF_COOKIE_SECURE = True
 

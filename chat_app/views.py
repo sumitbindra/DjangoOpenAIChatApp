@@ -3,6 +3,8 @@ from django.shortcuts import render
 from .models import Chat
 import openai
 from decouple import config
+from transformers import GPT2Tokenizer
+
 
 openai.api_key = config('openai_key')
 
@@ -14,17 +16,61 @@ def home(request):
 def chat(request):
     if request.method == 'POST':
         message = request.POST['message']
-        response = openai.Completion.create(
-            engine="text-davinci-002",
-            prompt=f"User: {message}\nAssistant:",
+        history = Chat.objects.filter(user=request.user).order_by('-created_at')
+
+        # Get the most recent n messages and join them into a single context string
+        max_tokens = 2048  # Set the maximum token limit
+        n = 15  # Get the most recent 5 messages
+        context = []
+        for chat in history[:n]:
+            msg=[
+                {"role": "user", "content": chat.message},
+                {"role": "assistant", "content": chat.response}
+            ]
+            context += msg
+        context = context[:max_tokens]  # Truncate the context string to fit within the token limit
+        #print(context)
+        
+        systemmessages = [
+            {"role": "system", 
+             "content": "You are a friend to a five year old child. Respond to their message using extremely sensitive, clear and concise language. If the child uses inappropriate language, you must respond by informing the child that the language they are using is unacceptable."},
+        ]
+
+        #print (systemmessages + context)
+
+        # Generate the AI response
+        # This code is for chatgpt
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages= systemmessages + context + [
+                {"role": "user", "content": message}
+            ]
+        )
+
+        if response.choices[0].message!=None:
+            response_text =  response.choices[0].message.content
+            Chat.objects.create(user=request.user, message=message, response=response_text)
+
+        else :
+            response_text = 'Failed to Generate response!'
+    
+        # This code is for pre CHATGPT DaVinci
+        # Tokenize the context string
+        # Load the GPT-2 tokenizer and model
+        """ tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+        context_tokens = tokenizer.encode(context)
+        context_tokens = context_tokens[-(max_tokens-1):]  # Keep only the most recent tokens that fit within the token limit
+        context = tokenizer.decode(context_tokens, skip_special_tokens=True) """
+
+        """ response = openai.Completion.create(
+            engine="gpt-3.5-turbo",
+            prompt=context + f"User: {message}\nAssistant:",
             max_tokens=50,
             n=1,
             stop=None,
             temperature=0.5,
         )
-        response_text = response.choices[0].text.strip()
-
-        Chat.objects.create(user=request.user, message=message, response=response_text)
+        response_text = response.choices[0].text.strip() """
 
     chats = Chat.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'chat.html', {'chats': chats})

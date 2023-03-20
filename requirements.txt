@@ -12,3 +12,4 @@ django_heroku==0.3.1
 dj_database_url==1.2.0
 whitenoise==6.4.0
 openai==0.27.2
+transformers==4.27.1
