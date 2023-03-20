@@ -21,11 +21,13 @@
       {% endfor %}
     </div>
     <div class="send-message">
-      <form method="post">
-        {% csrf_token %}
-        <input type="text" name="message" placeholder="Type your message here" autocomplete="off">
-        <input type="submit" value="Send">
-      </form>
+      <div class="send-message form">
+        <form method="post">
+          {% csrf_token %}
+          <input type="text" name="message" placeholder="Type your message here" autocomplete="off">
+          <input type="submit" value="Send">
+        </form>
+      </div>
     </div>
   </div>
 </div>
