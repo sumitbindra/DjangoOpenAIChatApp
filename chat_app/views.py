@@ -6,7 +6,7 @@ import openai
 from decouple import config
 import os, time
 from gtts import gTTS
-import pygame
+
 
 openai.api_key = config('openai_key')
 
@@ -64,7 +64,7 @@ def chat(request):
         ]
 
         #print (system_msg + context)
-
+        
         # Generate the AI response
         # This code is for chatgpt
         response = openai.ChatCompletion.create(
