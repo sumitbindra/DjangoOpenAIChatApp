@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="D:\Projects\Personal\chat_project\chatappenv"
+VIRTUAL_ENV="D:\Projects\Personal\DjangoOpenAIChatApp\chatappenv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

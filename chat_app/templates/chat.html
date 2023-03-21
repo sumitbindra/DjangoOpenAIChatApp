@@ -14,9 +14,13 @@
       <h2>Chat with AI</h2>
     </div>
     <div class="chatbox">
-      {% for chat in chats %}
-        <p><b>{{ chat.user.username }}:</b> {{ chat.message }}</p>
-        <p><b>AI:</b> {{ chat.response }}</p>
+      {% for chat in chat_messages %}
+        <div>
+          <strong>{{ child_name }}:</strong> {{ chat.message }}
+        </div>
+        <div>
+            <strong>{{ robot_name }}:</strong> {{ chat.response }}
+        </div>
         <hr>
       {% endfor %}
     </div>

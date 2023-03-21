@@ -1,23 +1,36 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.shortcuts import redirect
-from .models import Chat
+from .models import Chat, Profile
 import openai
 from decouple import config
 import os, time
 from gtts import gTTS
 from django.conf import settings
+from .forms import ProfileForm
 
 
 openai.api_key = config('openai_key')
 
 @login_required
 def home(request):
-    return redirect('chat')
+    if request.user.profile.is_complete:
+        return redirect('chat')
+    else:
+        return redirect('profile')
 
 @login_required
 def chat(request):
     n = 20  # Get the most recent 'n' messages for display and context
+
+    # Access the user's profile
+    user_profile = request.user.profile
+    # Access the attributes of the user's profile
+    child_name = user_profile.child_name
+    robot_name = user_profile.robot_name
+    mom_name = user_profile.mom_name
+    dad_name = user_profile.dad_name
+    pet_name = user_profile.pet_name
 
     if request.method == 'POST':
         message = request.POST['message']
@@ -73,6 +86,18 @@ def chat(request):
         system_msg = system_msg +  [
             {"role": "system", 
              "content": "Keep your sentences short. Maximum one to two sentences per response."},
+        ]
+
+
+        system_msg = system_msg +  [
+            {"role": "system", 
+             "content": "The name of the kid you are talking to is " + child_name + "."},
+        ]
+
+
+        system_msg = system_msg +  [
+            {"role": "system", 
+             "content": "Your should refer to yourself as " + robot_name + " the friendly robot."},
         ]
 
         if settings.DEBUG:
@@ -168,4 +193,26 @@ def chat(request):
 
     chats = Chat.objects.filter(user=request.user).order_by('-created_at')[:n]
     
-    return render(request, 'chat.html', {'chats': chats})
+    # Pass the profile attributes to the context
+    context = {
+        'chat_messages': chats,
+        'child_name': child_name,
+        'robot_name': robot_name,
+        'mom_name': mom_name,
+        'dad_name': dad_name,
+        'pet_name': pet_name,
+    }
+
+    return render(request, 'chat.html', context)
+
+@login_required
+def profile(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('chat')
+    else:
+        form = ProfileForm(instance=profile)
+    return render(request, 'profile.html', {'form': form})
