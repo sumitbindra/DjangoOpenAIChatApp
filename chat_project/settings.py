@@ -57,6 +57,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # serving static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'chat_project.urls'
@@ -163,6 +166,8 @@ STATIC_URL = '/static/'
 # the `collectstatic` management command will collect static files for deployment.
 # You can uncomment and set an appropriate path for your project.
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# In case you're using whitenoise middleware for serving static files
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Additional locations of static files
 STATICFILES_DIRS = [
