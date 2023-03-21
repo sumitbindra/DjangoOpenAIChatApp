@@ -174,12 +174,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'chat_app/static'),
 ]
 
-# This was added to use codespaces
-if DEBUG:
-    #CSRF_TRUSTED_ORIGINS = [os.path.join('https://', config('codespaces_server'))]
-    # Enable HTTPS-only CSRF cookie
-    CSRF_COOKIE_SECURE = True
-
+    
+# Enable HTTPS-only CSRF cookie    
+CSRF_COOKIE_SECURE = True
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_SIGNUP_REDIRECT_URL = '/'
 
