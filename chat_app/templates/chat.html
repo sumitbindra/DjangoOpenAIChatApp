@@ -7,6 +7,8 @@
 
 <div class="container">
   <div class="logout">
+    <a href="{% url 'profile' %}">Edit Profile</a>
+    <br><br>
     <a href="{% url 'account_logout' %}">Logout</a>
   </div>
   <div class="chat">
@@ -14,15 +16,18 @@
       <h2>Chat with AI</h2>
     </div>
     <div class="chatbox">
-      {% for chat in chat_messages %}
-        <div>
-          <strong>{{ child_name }}:</strong> {{ chat.message }}
-        </div>
-        <div>
-            <strong>{{ robot_name }}:</strong> {{ chat.response }}
-        </div>
-        <hr>
-      {% endfor %}
+      <div id="lottie-animation" style="position: absolute; width: 100%; height: 100%;"></div>
+      <div class="chat-messages">
+        {% for chat in chat_messages %}
+          <div>
+            <strong>{{ child_name }}:</strong> {{ chat.message }}
+          </div>
+          <div>
+              <strong>{{ robot_name }}:</strong> {{ chat.response }}
+          </div>
+          <hr>
+        {% endfor %}
+      </div>
     </div>
     <div class="send-message">
       <div class="send-message form">
@@ -35,4 +40,21 @@
     </div>
   </div>
 </div>
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM content loaded'); // Add this line
+    var animation = lottie.loadAnimation({
+      container: document.getElementById('lottie-animation'), // the element that will contain the animation
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: '{% static "chat_app/images/robotraving.json" %}' // the path to the animation JSON file
+    });
+  });
+</script>
+{% endblock %}
+
+
 {% endblock %}
